@@ -1,0 +1,10 @@
+TN:text
+PlayerName:text
+player_win:int:0
+player_lose:int:0
+
+textbox:ÉvÉåÉCÉÑÅ[ñº:PlayerName
+button:Player\nChange:player_win=0, player_lose = 0, TN = PlayerName
+button:Win:player_win++, total_win++
+button:Lose:player_lose+=1, total_lose=total_lose+1
+button:ï€ë∂:save()
