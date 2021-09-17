@@ -110,7 +110,7 @@ def readvars(path, var):
         if (head == 'textbox' or head == 'input'):
             vars = re.findall(r'[a-z_A-Z][a-z_A-Z0-9]+', line_list[2])
             if (vars[0]==line_list[2] and line_list[2] in var.keys()):
-                objects[line_list[2]] = [OBJ_TYPE_TEXTBOX, line_list[2]] 
+                objects[line_list[1]] = [OBJ_TYPE_TEXTBOX, line_list[2]] 
 
         elif (re.fullmatch(pattern_variable, head)):
             if (len(line_list) == 2):
@@ -167,14 +167,15 @@ class TextOnlyWindow(tk.Frame):
     def Update_text(self, instructions, objects):
         key = self.vars.keys()
         for x in objects.textboxs.keys():
-            v = objects.textboxs[x].get()
-            if (self.vars[x][1] == VAR_TYPE_INT):
+            v = objects.textboxs[x][0].get()
+            vkey = objects.textboxs[x][1]
+            if (self.vars[vkey][1] == VAR_TYPE_INT):
                 try:
-                    self.vars[x][0] = int(v)
+                    self.vars[vkey][0] = int(v)
                 except:
-                    self.vars[x][0] = 0
-            elif (self.vars[x][1] == VAR_TYPE_TEXT):
-                self.vars[x][0] = v
+                    self.vars[vkey][0] = 0
+            elif (self.vars[vkey][1] == VAR_TYPE_TEXT):
+                self.vars[vkey][0] = v
 
         for Sub_formula in instructions:
             if (Sub_formula == FUNC_SAVE):
@@ -247,9 +248,12 @@ class Button(tk.Frame):
                 self.buttons[-1].pack(anchor=tk.W, side='top', pady=5)
 
             elif (objects[b][0] == OBJ_TYPE_TEXTBOX):
-                self.textboxs[b] = tk.Entry(master)
-                self.textboxs[b].insert(tk.END, b)
-                self.textboxs[b].pack(anchor=tk.W, side='top', pady=5)
+                txt = tk.Label(self.master, text=b, wraplength=0)
+                txt.pack(anchor=tk.W, side='top', pady=5)
+                self.textboxs[b] = [tk.Entry(master), objects[b][1]]
+                value = self.mainwin.vars[objects[b][1]][0]
+                self.textboxs[b][0].insert(tk.END, value)
+                self.textboxs[b][0].pack(anchor=tk.W, side='top', pady=0)
 
     def buttonClick(self, instruction):
         def func():
@@ -274,7 +278,7 @@ if __name__ == '__main__':
         sys.exit()
     text_win = tk.Tk()
     text_Window = TextOnlyWindow(this_dir,  text_win, textdata, variable, prefix, win_x, win_y, title_name = title_text)
-    
+
     if (len(objects)):
         button_win = tk.Tk()
         Button_Window = Button(button_win, text_Window, objects, win_x, win_y, title_name = title_Objects)
