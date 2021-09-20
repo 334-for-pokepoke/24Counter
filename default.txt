@@ -7,3 +7,5 @@
 　　個人　//player_win//勝//player_lose//敗
 
 　　合計　//total_win//勝//total_lose//敗
+
+残り：//remaining//勝

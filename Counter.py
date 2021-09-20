@@ -2,6 +2,10 @@ import os
 import sys
 import re
 import tkinter as tk
+import tkinter.font
+import configparser
+
+config = configparser.ConfigParser()
 
 OBJ_TYPE_BUTTON  = 'button'
 OBJ_TYPE_TEXTBOX = 'textbox'
@@ -122,13 +126,13 @@ def readvars(path, var):
                 if (line_list[1].lower() == VAR_TYPE_INT):
                     var[line_list[0]] = [int(line_list[2]), VAR_TYPE_INT]
                 if (line_list[1].lower() == VAR_TYPE_TEXT):
-                    var[line_list[0]] = [int(line_list[2]), VAR_TYPE_TEXT]
+                    var[line_list[0]] = [line_list[2], VAR_TYPE_TEXT]
         elif (len(head)):
             return None
     return objects
 
 class TextOnlyWindow(tk.Frame):
-    def __init__(self, path, master, text, vars, prefix, win_x, win_y, title_name = "Main"):
+    def __init__(self, path, master, text, vars, prefix, win_x, win_y, title_name = "Main", font="MSゴシック", strsize = "10", color = "black"):
         super().__init__(master)
         self.pack()
         master.geometry(f'{win_x}x{win_y}')
@@ -141,6 +145,8 @@ class TextOnlyWindow(tk.Frame):
         self.vars = vars
         self.prefix = prefix
         self.pt_object = None
+        self.font = tk.font.Font(family=font, size=strsize)
+        self.strcolor = color
 
         self.print_init()
 
@@ -151,7 +157,8 @@ class TextOnlyWindow(tk.Frame):
 
         self.text = self.text.split('\n')
         for l in text.split('\n'):
-            self.labels.append(tk.Label(self.master, text=l, wraplength=0))
+            self.labels.append(tk.Label(self.master, text=l, wraplength=0, fg=self.strcolor))
+            self.labels[-1]["font"] = self.font
             self.labels[-1].pack(anchor=tk.NW, side='top', pady=0, ipady =0)
         return
 
@@ -223,7 +230,7 @@ class TextOnlyWindow(tk.Frame):
         return
 
 class Button(tk.Frame):
-    def __init__(self,master, mainwin, objects, win_x, win_y, title_name = "Objects"):
+    def __init__(self,master, mainwin, objects, win_x, win_y, bgcolor = "blue", title_name = "Objects", font="MSゴシック", strsize = "10", color = "black", button_size_x = 10):
         super().__init__(master)
         self.pack()
         master.geometry(f'{win_x}x{win_y}')
@@ -232,8 +239,9 @@ class Button(tk.Frame):
         self.buttons  = []       # [Button_Object, cmd]
         self.textboxs = {}       #key = name;
         self.mainwin = mainwin
-        button_size_x = 10
-        button_size_y = 1
+        self.font = tk.font.Font(family=font, size=strsize)
+        self.strcolor = color
+        self.bgcolor  = bgcolor
 
         for b in objects.keys():
             if (objects[b][0] == OBJ_TYPE_BUTTON):
@@ -242,9 +250,9 @@ class Button(tk.Frame):
                     inst = objects[b][1:]
 
                 button_size_y = len(b.split('\\n'))
-                self.buttons.append(tk.Button(master,text=b.replace('\\n', '\n'), command=self.buttonClick(inst), width = button_size_x, height=button_size_y))
+                self.buttons.append(tk.Button(master,text=b.replace('\\n', '\n'), command=self.buttonClick(inst), width = button_size_x, height=button_size_y, font = self.font))
                 #self.buttons[-1].place(x=pos_, y=pos_y)
-                self.buttons[-1].config(fg="black", bg="pink")
+                self.buttons[-1].config(fg=self.strcolor, bg=self.bgcolor)
                 self.buttons[-1].pack(anchor=tk.W, side='top', pady=5)
 
             elif (objects[b][0] == OBJ_TYPE_TEXTBOX):
@@ -261,13 +269,15 @@ class Button(tk.Frame):
         return func
 
 if __name__ == '__main__':
-    prefix = '//'
-    title_text   = 'Counter'
-    title_Objects = '操作側ウインドウ'
-    win_x = 300
-    win_y = 300
+    this_dir = os.path.dirname(sys.argv[0])
 
-    this_dir           = os.path.dirname(sys.argv[0])
+    config.read(this_dir + '/config.ini', encoding='utf-8')
+    config_default = dict(config.items('DEFAULT'))
+    config_textwin = dict(config.items('TextWindow'))
+    config_objwin = dict(config.items('ObjectWindow'))
+
+    prefix = config_default['prefix']
+
     textdata, variable = readtext(this_dir, prefix)
     objects            = readvars(this_dir, variable)
     if (textdata==None):
@@ -277,10 +287,10 @@ if __name__ == '__main__':
         print('error:Error in variable.txt')
         sys.exit()
     text_win = tk.Tk()
-    text_Window = TextOnlyWindow(this_dir,  text_win, textdata, variable, prefix, win_x, win_y, title_name = title_text)
+    text_Window = TextOnlyWindow(this_dir,  text_win, textdata, variable, prefix, config_textwin['xsize'], config_textwin['ysize'], title_name = config_textwin['title'], color = config_textwin['color'], font = config_textwin['font'], strsize = config_textwin['size'])
 
     if (len(objects)):
         button_win = tk.Tk()
-        Button_Window = Button(button_win, text_Window, objects, win_x, win_y, title_name = title_Objects)
+        Button_Window = Button(button_win, text_Window, objects, config_objwin['xsize'], config_objwin['ysize'], title_name = config_objwin['title'], color = config_objwin['color'], font = config_objwin['font'], strsize = config_objwin['size'], bgcolor = config_objwin['bgcolor'], button_size_x = int(config_objwin['button_size_x']))
 
     text_Window.mainloop()
