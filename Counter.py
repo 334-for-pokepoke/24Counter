@@ -207,14 +207,14 @@ class TextOnlyWindow(tk.Frame):
                     self.self.vars[left][0] += joinText(right, self.vars)
                 continue
             if ('-=' in Sub_formula):
-                m1 = re.match(r'[a-z_A-Z][a-z_A-Z0-9]+\+=', Sub_formula)
+                m1 = re.match(r'[a-z_A-Z][a-z_A-Z0-9]+\-=', Sub_formula)
                 left  = m1.group()[:-2]
                 right = Sub_formula[m1.end():]
                 if (self.vars[left][1] == VAR_TYPE_INT):
                     self.vars[left][0] -= int(calcform(right, self.vars))
                 continue
             if ('=' in Sub_formula):
-                m1 = re.match(r'[a-z_A-Z][a-z_A-Z0-9]+=', Sub_formula)
+                m1 = re.match(r'[a-z_A-Z][a-z_A-Z0-9]=', Sub_formula)
                 left  = m1.group()[:-1]
                 right = Sub_formula[m1.end():]
                 if (self.vars[left][1] == VAR_TYPE_INT):
