@@ -5,6 +5,9 @@
 * 表示するテキストを入力してください．
 * アルファベット及びアンダーバーで構成された単語をprefix（デフォルトでは「//」）で囲むことで変数扱いできます．
 
+![variable](https://github.com/334-for-pokepoke/24Counter/blob/main/img/default.png)
+
+
 ## variable.txt
 * 変数の宣言や，テキストボックス・ボタンの設定を行います．
 * １行あたり1つの変数宣言又はオブジェクトの宣言まで可能です．
@@ -29,7 +32,9 @@
 * また，使用できる演算子は+-\*^()及び++, --, +=, -=のみです（文字列については加算のみ）.
 * 予め用意されている関数は現状save()のみです．
 * save()関数は各変数の値をbkp.txtに書き出します．
-![variable](https://github.com/334-for-pokepoke/24Counter/blob/main/img/default.png)
+
+
+![variable](https://github.com/334-for-pokepoke/24Counter/blob/main/img/variable.png)
 
 ## config.ini
 * [DEFAULT]
@@ -50,3 +55,5 @@
   * bg_color  : ボタンの背景色です．
   * button_size_x : ボタンの横幅です．1は半角「0」1文字分の横幅です．
   
+![variable](https://github.com/334-for-pokepoke/24Counter/blob/main/img/exe1.png)
+![variable](https://github.com/334-for-pokepoke/24Counter/blob/main/img/exe2.png)
