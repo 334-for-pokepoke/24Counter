@@ -29,6 +29,7 @@
 * また，使用できる演算子は+-\*^()及び++, --, +=, -=のみです（文字列については加算のみ）.
 * 予め用意されている関数は現状save()のみです．
 * save()関数は各変数の値をbkp.txtに書き出します．
+![variable](https://github.com/334-for-pokepoke/24Counter/blob/main/img/default.png)
 
 ## config.ini
 * [DEFAULT]
